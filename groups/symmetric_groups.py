@@ -8,7 +8,7 @@ class SymmetricGroup(Group):
 
     def _validate(self,value):
         list_comparison = np.array([i for i in range(self.n)])
-        if not sorted(list_comparison) == sorted(np.array([i for i in range(self.n)])):
+        if not sorted(list_comparison) == sorted(value):
             raise ValueError("Element must be a permutation of",self.n,"objects")
 
     def operation(self , a , b):
