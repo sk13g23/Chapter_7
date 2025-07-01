@@ -4,6 +4,11 @@ from numbers import Integral
 class VerifiedSet(set):
     """A subclass of set which ore only valid for certain values"""
 
+    def __init__(self, iterable=()):
+        for item in iterable:
+            self._verify(item)
+        super().__init__(iterable)
+
     def _verify(self,value):
         raise NotImplementedError()
 
@@ -20,23 +25,28 @@ class VerifiedSet(set):
         super().symmetric_difference_update(value)
 
     def union(self,value):
-        return VerifiedSet(super().union(self , value))
+        return type(self)(super().union(self , value))
 
     def intersection(self,value):
-        return VerifiedSet(super().intersection(self , value))
+        return type(self)(super().intersection(self , value))
 
     def difference(self,value):
-        return VerifiedSet(super().difference(self , value))
+        return type(self)(super().difference(self , value))
 
     def symmetric_difference(self,value):
-        return VerifiedSet(super().symmetric_difference(self , value))
+        return type(self)(super().symmetric_difference(self , value))
 
     def copy(self):
-        return VerifiedSet(super().copy())
+        return type(self)(super().copy())
 
 
 class IntSet(VerifiedSet):
 
     def _verify(self,value):
-        if not isinstance(value,numbers.Integral):
-            raise TypeError("IntSet expected an Integer got a",type(value),__name__)
+        if hasattr(value,"__iter__"):
+            for i in value:
+                if not isinstance(i,numbers.Integral):
+                    raise TypeError("IntSet expected an Integer got a",type(value),__name__)
+        else:
+            if not isinstance(value, numbers.Integral):
+                raise TypeError("IntSet expected an Integer got a", type(value), __name__)
